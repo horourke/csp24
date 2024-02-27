@@ -1,6 +1,7 @@
 # Example script for O'Rourke (2024) Monte Carlo simulation tutorial for latent variable models
+# Conference on Statistical Practice, Feb 2024, New Orleans, LA
+# "Assembling and Automating Efficient Monte Carlo Simulations for Latent Variable Models in R"
 
-rm(list=ls())
 install.packages("MplusAutomation")
 install.packages("dplyr")
 library(MplusAutomation)
@@ -8,9 +9,9 @@ library(dplyr)
 
 ## Create master directory for simulation study ##
 # Set up directories to switch easily between home, work, etc. - choose 1
-#homepath <- "C:/users/home/mc_sim_ex/"
+#homepath <- "C:/users/home/mc_sim_ex_csp/"
 #filepath <- homepath
-workpath <- "C:/Users/holly/Dropbox (ASU)/Conferences-Workshops-Talks/2024 CSP/mc_sim_ex_csp/"
+workpath <- "C:/users/work/mc_sim_ex_csp/"
 filepath <- workpath
 
 # Create master directory on your machine
@@ -23,7 +24,7 @@ if (!dir.exists(filepath)) {
 # n_values = sample sizes
 factors <- c(4,5)
 n_values <- c(100,500)
-reps <- 2
+reps <- 500
 
 # Nested loop over factors and values
 for (f in factors) {
@@ -167,10 +168,8 @@ ab = a*b;
   OUTPUT: TECH1;', 
                        reps, f, n, sub_path, 
                        f, n, f, n,
-                       f, f, f,
-                       f, f, f,
-                       f, f, f,
-                       f, f, f),
+                       f, f, f, f, f, f,
+                       f, f, f, f, f, f),
                con = ascr)
 
     # file suffix for the creation scripts 
@@ -191,19 +190,15 @@ ab = a*b;
     runModels(sub_path)
   } #this closes the n_values loop
 } # this closes the factors loop
-
-####################################################### PICK UP HERE EDITING CODE
   
 #############################################
 # SAVING OUTPUT ESTIMATES FOR FUTURE ANALYSES
 #############################################
 
-# This code saves raw parameter estimates, standard errors, p values, and confidence intervals
-
-# pick up here with correct # of matcols
+# This code saves raw parameter estimates, standard errors, and p values
 
 # Re-initialize loops because we need the attached if statements
-# matcols = # of estimates in output; NOT tech1!
+# matcols = # of estimates in output, NOT tech1!
 for (f in factors) {
   if (f == 4) {
     matcols <- 43
@@ -225,7 +220,7 @@ for (f in factors) {
     
     #Create empty matrix with for all replications by condition
     # Create one per desired set of output
-    # "matcols" = # of estimates from Mplus tech1
+    # "matcols" = # of estimates from Mplus output
     mat_ests <- matrix(0, nrow = reps, ncol = matcols)
     mat_se <- matrix(0, nrow = reps, ncol = matcols)
     mat_p <- matrix(0, nrow = reps, ncol = matcols)
@@ -279,7 +274,6 @@ for (f in factors) {
     write.table(pval, file=paste0(sub_path, "/", file_suffix_n, "_pvals.dat"), row.names=FALSE, col.names=TRUE, sep="\t", quote=FALSE)
   } # this closes the n_values loop
 } # this closes the factors loop
-
 
 ## Combine condition-level data into one dataset per outcome with all replications, for all conditions ##
 
