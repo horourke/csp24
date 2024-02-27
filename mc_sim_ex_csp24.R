@@ -302,7 +302,6 @@ for (f in factors) {
     filename_p <- paste0(sub_path, "/i", f, "_n", n, "_pvals.dat")
     ptable <- read.table(filename_p, header = TRUE)
     pvs <- bind_rows(pvs, ptable)
-    
     # create factor & rep variables for each dataset
     for (rep in 1:reps) {
       simests[row1, "rep"] <- rep
